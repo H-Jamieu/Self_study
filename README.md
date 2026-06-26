@@ -44,19 +44,30 @@ trading day is 2025-01-21. The start date is configurable (e.g. use
 
 ## Back-test (Step 6–7)
 
-Only **dropping Fridays** are traded. Four buy→sell price pairs are evaluated:
+Only **dropping Fridays** are traded, each closed out on the next trading day
+("Monday"). Two **policies** are evaluated:
 
+* **Policy 1 — long**  — buy the Friday, sell on Monday (profit if it rebounds).
+* **Policy 2 — short** — short-sell the Friday, buy to cover on Monday
+  (profit if the drop continues).
+
+Four entry→exit price pairs are evaluated for each policy:
 `open→open`, `open→close`, `close→open`, `close→close`
-(buy leg = Friday price, sell leg = Monday price).
+(entry leg = Friday price, exit leg = Monday price).
 
-Round-trip fees of **0.5% buy + 0.5% sell** are applied, so one trade multiplies
+Round-trip fees of **0.5% buy + 0.5% sell** are applied on both legs. With
+`e` = entry/Friday price and `x` = exit/Monday price, one trade multiplies
 capital by:
 
 ```
-(sell_price / buy_price) × (1 − 0.005) × (1 − 0.005)
+long  : (x / e) × (1 − buy_fee) × (1 − sell_fee)
+short : 1 + (1 − sell_fee) − (x / e) × (1 + buy_fee)
 ```
 
-Two tests are produced per market and strategy:
+With no price move both reduce to `1 − buy_fee − sell_fee` (the ~1% round-trip
+cost), and long/short returns mirror the price move.
+
+Two tests are produced per market, policy and strategy:
 
 * **Independent** — a fresh \$100 is risked every dropping Friday; results are
   aggregated (total profit, average return, win rate, best/worst trade).
@@ -91,9 +102,9 @@ output/
     prices.csv               # daily OHLC within the study window
     fridays.csv              # Step 2–4: Fridays, Thursday ref, drop, Monday OHLC
     fri_to_mon_changes.csv   # Step 5: open/close→open/close % changes
-    trades.csv               # per-trade net returns (dropping Fridays)
-    independent_test.csv      # Step 6: independent (non-compounding) results
-    continuous_test.csv       # Step 6: continuous (compounding) results
+    trades.csv               # per-trade net returns (dropping Fridays), long & short
+    independent_test.csv      # Step 6: independent (non-compounding), long & short
+    continuous_test.csv       # Step 6: continuous (compounding), long & short
   summary_independent.csv    # all markets × strategies
   summary_continuous.csv     # all markets × strategies
 ```

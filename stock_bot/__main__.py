@@ -55,8 +55,8 @@ def main(argv: list[str] | None = None) -> int:
         res = results[name]
         _print_df(f"{name}: Fridays (with drop conditioning)", res["fridays"])
         _print_df(f"{name}: Friday -> Monday changes", res["changes"])
-        _print_df(f"{name}: Independent test (dropping Fridays)", res["independent"])
-        _print_df(f"{name}: Continuous test (dropping Fridays)", res["continuous"])
+        _print_df(f"{name}: Independent test (dropping Fridays, long & short)", res["independent"])
+        _print_df(f"{name}: Continuous test (dropping Fridays, long & short)", res["continuous"])
 
     _print_df("SUMMARY - Independent test (all markets)", results["_summary"]["independent"])
     _print_df("SUMMARY - Continuous test (all markets)", results["_summary"]["continuous"])
