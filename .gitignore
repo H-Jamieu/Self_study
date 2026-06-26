@@ -1,0 +1,7 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Cached raw market data (re-downloadable from Yahoo Finance)
+data/raw/
